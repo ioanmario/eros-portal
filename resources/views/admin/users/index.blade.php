@@ -10,7 +10,8 @@
                 <th class="border px-4 py-2">ID</th>
                 <th class="border px-4 py-2">Name</th>
                 <th class="border px-4 py-2">Email</th>
-                <th class="border px-4 py-2">Permissions</th>
+                <th class="border px-4 py-2">Affiliate Code</th>
+                <th class="border px-4 py-2">Permissions / Roles</th>
                 <th class="border px-4 py-2">Actions</th>
             </tr>
         </thead>
@@ -20,8 +21,14 @@
                 <td class="border px-4 py-2">{{ $user->id }}</td>
                 <td class="border px-4 py-2">{{ $user->name }}</td>
                 <td class="border px-4 py-2">{{ $user->email }}</td>
+                <td class="border px-4 py-2">{{ $user->affiliate_code ?? '-' }}</td>
                 <td class="border px-4 py-2">
-                    {{ implode(', ', $user->getPermissionNames()->toArray()) }}
+                    @if($user->roles->count() > 0)
+                        <div><strong>Roles:</strong> {{ implode(', ', $user->getRoleNames()->toArray()) }}</div>
+                    @endif
+                    @if($user->permissions->count() > 0)
+                        <div><strong>Permissions:</strong> {{ implode(', ', $user->getPermissionNames()->toArray()) }}</div>
+                    @endif
                 </td>
                 <td class="border px-4 py-2">
                     <a href="{{ route('admin.users.permissions.edit', $user->id) }}" class="text-blue-600">Manage Permissions</a>

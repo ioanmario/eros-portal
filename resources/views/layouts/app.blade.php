@@ -54,13 +54,21 @@
                             </li>
                         @endif
                     @else
-                        <!-- Extra dashboard menu (only when logged in) -->
-                        <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('account') }}">Account Management</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('roadmap') }}">Roadmap</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('affiliate') }}">Affiliate</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('expert.advisors') }}">Expert Advisors</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('support') }}">Support</a></li>
+                        {{-- 🔹 Role-based navigation --}}
+                        @if(Auth::user()->hasRole('admin'))
+                            <!-- Admin Menu -->
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.users.index') }}">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.switch.user') }}">Switch to User View</a></li>
+                        @else
+                            <!-- User Menu -->
+                            <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('account') }}">Account Management</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('roadmap') }}">Roadmap</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('affiliate') }}">Affiliate</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('expert.advisors') }}">Expert Advisors</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('support') }}">Support</a></li>
+                        @endif
 
                         <!-- User dropdown -->
                         <li class="nav-item dropdown">

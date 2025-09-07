@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\BrokerSyncController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,4 +52,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/affiliate', [App\Http\Controllers\AffiliateController::class, 'index'])->name('affiliate');
     Route::get('/expert-advisors', [App\Http\Controllers\ExpertAdvisorController::class, 'index'])->name('expert.advisors');
     Route::get('/support', [App\Http\Controllers\SupportController::class, 'index'])->name('support');
+
+    // ----------------- BROKER SYNC ROUTES -----------------
+    Route::prefix('broker-sync')->group(function () {
+        Route::get('/', [BrokerSyncController::class, 'select'])->name('broker.sync.select');
+
+        // MetaTrader flow (MT4 / MT5)
+        Route::get('/{platform}/form', [BrokerSyncController::class, 'mtForm'])
+            ->whereIn('platform', ['mt4','mt5'])
+            ->name('broker.sync.mt.form');
+
+        Route::post('/{platform}/verify', [BrokerSyncController::class, 'mtVerify'])
+            ->whereIn('platform', ['mt4','mt5'])
+            ->name('broker.sync.mt.verify');
+
+        // Server search (autocomplete)
+        Route::get('/servers/search', [BrokerSyncController::class, 'searchServers'])
+            ->name('broker.sync.servers.search');
+
+        // Stubs — UI only for now
+        Route::get('/ctrader', [BrokerSyncController::class, 'ctrader'])->name('broker.sync.ctrader');
+        Route::get('/matchtrader', [BrokerSyncController::class, 'matchtrader'])->name('broker.sync.matchtrader');
+    });
 });

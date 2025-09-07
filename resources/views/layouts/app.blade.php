@@ -9,18 +9,25 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
+    <!-- Optional font -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    <!-- Scripts -->
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Alpine (deferred) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Vite (your app assets) -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
+            <!-- Brand points to Broker Sync (as requested) -->
+            <a class="navbar-brand" href="{{ route('broker.sync.select') }}">
                 {{ config('app.name', 'Laravel') }}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -54,8 +61,8 @@
                             </li>
                         @endif
                     @else
-                        {{-- 🔹 Role-based navigation --}}
-                        @if(Auth::user()->hasRole('admin'))
+                        {{-- Role-based navigation --}}
+                        @if(method_exists(Auth::user(), 'hasRole') && Auth::user()->hasRole('admin'))
                             <!-- Admin Menu -->
                             <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('admin.users.index') }}">Manage Users</a></li>
@@ -99,5 +106,8 @@
         @yield('content')
     </main>
 </div>
+
+<!-- Bootstrap JS bundle (Popper included) - added here so navbar toggles work if not bundled in your Vite assets -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 </body>
 </html>

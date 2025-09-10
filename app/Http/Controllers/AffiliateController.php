@@ -8,6 +8,6 @@ class AffiliateController extends Controller
 {
     public function index()
     {
-        return view('account.index');
+        return view('affiliate.index');
     }
 }

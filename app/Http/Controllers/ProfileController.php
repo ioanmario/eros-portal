@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class RoadmapController extends Controller
+class ProfileController extends Controller
 {
     public function index()
     {
-        return view('roadmap.index');
+        return view('profile.index');
     }
 }
+
+

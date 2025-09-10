@@ -21,10 +21,51 @@
 
     <!-- Vite (your app assets) -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <style>
+        :root {
+            --brand-accent: #8B0000; /* vampire red */
+            --bg: #ffffff;
+            --fg: #212529;
+            --card-bg: #ffffff;
+            --muted: #6c757d;
+            --navbar-bg: #f8f9fa;
+        }
+        html.dark {
+            --bg: #0f0f12;
+            --fg: #8B0000; /* vampire red text in dark mode */
+            --card-bg: #141419;
+            --muted: #a1a1aa;
+            --navbar-bg: #121217;
+        }
+        body { background: var(--bg); color: var(--fg); }
+        .navbar { background: var(--navbar-bg) !important; }
+        .card { background: var(--card-bg); }
+        .text-muted { color: var(--muted) !important; }
+        .btn-brand { background-color: var(--brand-accent); border-color: var(--brand-accent); color: #fff; }
+        .btn-brand:hover { filter: brightness(1.1); color: #fff; }
+        /* Dark theme navbar links use vampire red */
+        html.dark .navbar .navbar-brand,
+        html.dark .navbar .nav-link { color: var(--brand-accent) !important; }
+        html.dark .navbar .nav-link:hover,
+        html.dark .navbar .nav-link:focus { color: #b11a1a !important; }
+        html.dark .navbar .dropdown-menu { background: var(--card-bg); }
+        html.dark .navbar .dropdown-item { color: var(--brand-accent); }
+        html.dark .navbar .dropdown-item:hover { background: rgba(139,0,0,0.12); color: #ff5a5a; }
+    </style>
+    <script>
+        (function(){
+            try {
+                const pref = localStorage.getItem('theme');
+                if (pref === 'dark' || (!pref && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-light shadow-sm">
+    <nav class="navbar navbar-expand-md shadow-sm">
         <div class="container">
             <!-- Brand points to Broker Sync (as requested) -->
             <a class="navbar-brand" href="{{ route('broker.sync.select') }}">
@@ -75,27 +116,10 @@
                             <li class="nav-item"><a class="nav-link" href="{{ route('affiliate') }}">Affiliate</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('expert.advisors') }}">Expert Advisors</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('support') }}">Support</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('profile') }}">Profile</a></li>
                         @endif
 
-                        <!-- User dropdown -->
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
+                        
                     @endguest
                 </ul>
             </div>
@@ -109,5 +133,10 @@
 
 <!-- Bootstrap JS bundle (Popper included) - added here so navbar toggles work if not bundled in your Vite assets -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        // Navbar no longer controls theme; handled on Profile page only
+    });
+</script>
 </body>
 </html>

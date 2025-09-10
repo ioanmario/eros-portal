@@ -8,6 +8,6 @@ class ExpertAdvisorController extends Controller
 {
     public function index()
     {
-        return view('account.index');
+        return view('expert_advisors.index');
     }
 }

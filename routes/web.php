@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\BrokerAccountController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\BrokerSyncController;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +20,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-
+    
+Route::get('/test-metaapi', function () {
+    $response = Http::withToken(env('METAAPI_TOKEN'))
+        ->get(env('METAAPI_BASE') . '/users/current');
+    return $response->json();
+});
     // Manage Users & Permissions
     Route::get('/users', [PermissionController::class, 'index'])->name('admin.users.index');
     Route::get('/users/{user}/permissions', [PermissionController::class, 'edit'])->name('admin.users.permissions.edit');
@@ -52,6 +60,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/affiliate', [App\Http\Controllers\AffiliateController::class, 'index'])->name('affiliate');
     Route::get('/expert-advisors', [App\Http\Controllers\ExpertAdvisorController::class, 'index'])->name('expert.advisors');
     Route::get('/support', [App\Http\Controllers\SupportController::class, 'index'])->name('support');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
     // ----------------- BROKER SYNC ROUTES -----------------
     Route::prefix('broker-sync')->group(function () {
@@ -74,4 +83,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ctrader', [BrokerSyncController::class, 'ctrader'])->name('broker.sync.ctrader');
         Route::get('/matchtrader', [BrokerSyncController::class, 'matchtrader'])->name('broker.sync.matchtrader');
     });
+
+    // Broker accounts CRUD (auth only)
+    Route::get('/broker-accounts', [BrokerAccountController::class, 'index'])->name('broker.accounts.index');
+    Route::post('/broker-accounts', [BrokerAccountController::class, 'store'])->name('broker.accounts.store');
+    Route::delete('/broker-accounts/{brokerAccount}', [BrokerAccountController::class, 'destroy'])->name('broker.accounts.destroy');
 });

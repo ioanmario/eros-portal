@@ -8,28 +8,33 @@
     <div class="row mb-5">
         <div class="col-12">
             <div class="support-hero bg-gradient-primary text-white rounded-4 p-5 position-relative overflow-hidden">
-                <div class="position-absolute top-0 end-0 opacity-10">
-                    <i class="fas fa-headset" style="font-size: 8rem;"></i>
+                <div class="hero-particles position-absolute top-0 start-0 w-100 h-100"></div>
+                <div class="hero-shapes position-absolute top-0 start-0 w-100 h-100">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
                 </div>
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <h1 class="display-5 fw-bold mb-3">
-                            <i class="fas fa-headset me-3"></i>
-                            Support Center
-                        </h1>
-                        <p class="lead mb-4">Get instant help with your account, trading, or technical issues. Our team is here to assist you 24/7.</p>
-                        <div class="d-flex flex-wrap gap-3">
-                            <a href="{{ route('support.create') }}" class="btn btn-light btn-lg px-4 py-3 shadow-sm">
-                                <i class="fas fa-plus me-2"></i>Create New Ticket
-                            </a>
-                            <a href="mailto:support@eros-portal.com" class="btn btn-outline-light btn-lg px-4 py-3">
-                                <i class="fas fa-envelope me-2"></i>Email Support
-                            </a>
+                <div class="position-relative">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h1 class="display-5 fw-bold mb-3 animate-fade-in">
+                                <i class="fas fa-headset me-3"></i>
+                                Support Center
+                            </h1>
+                            <p class="lead mb-4 animate-fade-in-delay">Get instant help with your account, trading, or technical issues. Our team is here to assist you 24/7.</p>
+                            <div class="d-flex flex-wrap gap-3 animate-fade-in-delay-2">
+                                <a href="{{ route('support.create') }}" class="btn btn-light btn-lg px-4 py-3 shadow-sm animate-bounce">
+                                    <i class="fas fa-plus me-2"></i>Create New Ticket
+                                </a>
+                                <a href="mailto:support@eros-portal.com" class="btn btn-outline-light btn-lg px-4 py-3">
+                                    <i class="fas fa-envelope me-2"></i>Email Support
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="support-illustration">
-                            <i class="fas fa-comments fa-5x opacity-75"></i>
+                        <div class="col-lg-4 text-center">
+                            <div class="support-illustration animate-float">
+                                <i class="fas fa-comments fa-5x opacity-75"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -237,9 +242,88 @@
 <style>
 /* Hero Section */
 .support-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     position: relative;
     overflow: hidden;
+}
+
+.hero-particles {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.hero-shapes {
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 20%;
+    right: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    right: 20%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    top: 40%;
+    right: 5%;
+    animation-delay: 4s;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+
+.animate-fade-in-delay-2 {
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
 }
 
 .support-hero::before {
@@ -428,12 +512,12 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
     border: none;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
 }
 
 /* Cards */
@@ -471,15 +555,15 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .support-hero {
-        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     }
     
     .table-header {
-        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     }
     
     .ticket-row:hover {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
     }
 }
 </style>

@@ -7,7 +7,7 @@
         <span class="badge rounded-pill bg-primary-subtle text-primary fw-semibold" style="background: var(--brand-accent, #8B0000); color: #fff;">Members Area</span>
         <h1 class="display-5 fw-bold mt-3">Pass Challenges. Get Payouts. Scale Safely.</h1>
         <p class="lead text-muted mx-auto" style="max-width: 800px;">
-            Your central hub for connecting brokers, deploying EAs and tracking your journey. Let’s get you profitable with clarity and control.
+            Your central hub for connecting brokers, deploying EAs and tracking your journey. Let's get you profitable with clarity and control.
         </p>
         <div class="d-flex gap-3 justify-content-center mt-3">
             <a href="{{ route('account') }}" class="btn btn-primary btn-lg">Connect Broker</a>
@@ -48,7 +48,7 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
                     <h3 class="h5">Roadmap</h3>
-                    <p class="text-muted">See what’s shipping next and vote on features.</p>
+                    <p class="text-muted">See what's shipping next and vote on features.</p>
                     <a href="{{ route('roadmap') }}" class="stretched-link">View roadmap</a>
                 </div>
             </div>
@@ -64,4 +64,5 @@
         </div>
     </div>
 </div>
+
 @endsection

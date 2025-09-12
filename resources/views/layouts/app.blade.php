@@ -49,6 +49,52 @@
             background: var(--navbar-bg) !important; 
             border-bottom: 1px solid var(--border);
         }
+        
+        /* EROS EQUITY Logo Styling */
+        .navbar-brand {
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .eros-logo-img {
+            height: 50px;
+            width: auto;
+            max-width: 200px;
+            transition: all 0.3s ease;
+            filter: brightness(1);
+            object-fit: contain;
+        }
+        
+        .eros-logo-img:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        
+        /* Dark mode logo adjustments */
+        html.dark .eros-logo-img {
+            filter: brightness(1.2) contrast(1.1);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .eros-logo-img {
+                height: 40px;
+                max-width: 150px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .eros-logo-img {
+                height: 35px;
+                max-width: 120px;
+            }
+        }
+        
+        /* Ensure logo doesn't interfere with navbar height */
+        .navbar {
+            min-height: 60px;
+        }
         .card { 
             background: var(--card-bg); 
             border: 1px solid var(--border);
@@ -136,9 +182,9 @@
 <div id="app">
     <nav class="navbar navbar-expand-md shadow-sm">
         <div class="container">
-            <!-- Brand points to Broker Sync (as requested) -->
+            <!-- EROS EQUITY Logo -->
             <a class="navbar-brand" href="{{ route('broker.sync.select') }}">
-                {{ config('app.name', 'Laravel') }}
+                <img src="{{ asset('images/eros-equity-logo.png') }}" alt="EROS EQUITY" class="eros-logo-img">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
@@ -189,6 +235,7 @@
                             <li class="nav-item"><a class="nav-link" href="{{ route('roadmap') }}">Roadmap</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('affiliate') }}">Affiliate</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('expert.advisors') }}">Expert Advisors</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('prop.firms') }}">Prop Firms</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('support.index') }}">Support</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('plans') }}">Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('profile') }}">Profile</a></li>

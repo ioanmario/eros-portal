@@ -8,28 +8,33 @@
     <div class="row mb-5">
         <div class="col-12">
             <div class="ea-hero bg-gradient-primary text-white rounded-4 p-5 position-relative overflow-hidden">
-                <div class="position-absolute top-0 end-0 opacity-10">
-                    <i class="fas fa-robot" style="font-size: 8rem;"></i>
+                <div class="hero-particles position-absolute top-0 start-0 w-100 h-100"></div>
+                <div class="hero-shapes position-absolute top-0 start-0 w-100 h-100">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
                 </div>
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <h1 class="display-5 fw-bold mb-3">
-                            <i class="fas fa-robot me-3"></i>
-                            Eros Expert Advisors
-                        </h1>
-                        <p class="lead mb-4">Professional trading plans with advanced EAs designed for prop firm success. Scale from $1M to $6M funding with our proven algorithms.</p>
-                        <div class="d-flex flex-wrap gap-3">
-                            <button class="btn btn-light btn-lg px-4 py-3 shadow-sm" onclick="scrollToEAs()">
-                                <i class="fas fa-arrow-down me-2"></i>Explore EAs
-                            </button>
-                            <button class="btn btn-outline-light btn-lg px-4 py-3" onclick="showDemoModal()">
-                                <i class="fas fa-play me-2"></i>Watch Demo
-                            </button>
+                <div class="position-relative">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h1 class="display-5 fw-bold mb-3 animate-fade-in">
+                                <i class="fas fa-robot me-3"></i>
+                                Eros Expert Advisors
+                            </h1>
+                            <p class="lead mb-4 animate-fade-in-delay">Professional trading plans with advanced EAs designed for prop firm success. Scale from $1M to $6M funding with our proven algorithms.</p>
+                            <div class="d-flex flex-wrap gap-3 animate-fade-in-delay-2">
+                                <button class="btn btn-light btn-lg px-4 py-3 shadow-sm animate-bounce" onclick="scrollToEAs()">
+                                    <i class="fas fa-arrow-down me-2"></i>Explore EAs
+                                </button>
+                                <button class="btn btn-outline-light btn-lg px-4 py-3" onclick="showDemoModal()">
+                                    <i class="fas fa-play me-2"></i>Watch Demo
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="ea-illustration">
-                            <i class="fas fa-chart-line fa-5x opacity-75"></i>
+                        <div class="col-lg-4 text-center">
+                            <div class="ea-illustration animate-float">
+                                <i class="fas fa-chart-line fa-5x opacity-75"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -530,9 +535,88 @@
 <style>
 /* Hero Section */
 .ea-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     position: relative;
     overflow: hidden;
+}
+
+.hero-particles {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.hero-shapes {
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 20%;
+    right: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    right: 20%;
+    animation-delay: 2s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    top: 40%;
+    right: 5%;
+    animation-delay: 4s;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+
+.animate-fade-in-delay-2 {
+    animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
 }
 
 .ea-hero::before {
@@ -655,12 +739,12 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
     border: none;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
 }
 
 /* Cards */

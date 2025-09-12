@@ -5,14 +5,17 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-gradient-primary text-white text-center py-4">
-                    <h1 class="h3 mb-0 fw-bold text-dark">
-                        <i class="fas fa-calculator me-2"></i>
-                        Trading Earnings Calculator
-                    </h1>
-                    <p class="mb-0 mt-2 fw-bold text-dark">
-                        Calculate your potential monthly earnings based on your trading setup, account size, and profit percentage.
-                    </p>
+                <div class="card-header bg-gradient-primary text-white text-center py-4 position-relative overflow-hidden">
+                    <div class="hero-particles position-absolute top-0 start-0 w-100 h-100"></div>
+                    <div class="position-relative">
+                        <h1 class="h3 mb-0 fw-bold animate-fade-in">
+                            <i class="fas fa-calculator me-2"></i>
+                            Trading Earnings Calculator
+                        </h1>
+                        <p class="mb-0 mt-2 fw-bold animate-fade-in-delay">
+                            Calculate your potential monthly earnings based on your trading setup, account size, and profit percentage.
+                        </p>
+                    </div>
                 </div>
                 
                 <div class="card-body p-4">
@@ -73,19 +76,33 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Withdrawal Fee %</label>
-                                                <input type="number" class="form-control" id="withdrawalFee" value="10" min="0" max="50" step="1">
+                                                <label class="form-label">Prop Firm Profit Split</label>
+                                                <select class="form-select" id="profitSplit">
+                                                    <option value="80">80% (You keep 80%)</option>
+                                                    <option value="90" selected>90% (You keep 90%)</option>
+                                                    <option value="100">100% (You keep 100%)</option>
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
-                                                <label class="form-label">Risk Level</label>
-                                                <select class="form-select" id="riskLevel">
-                                                    <option value="conservative">Conservative (2-4% monthly)</option>
-                                                    <option value="moderate" selected>Moderate (4-6% monthly)</option>
-                                                    <option value="aggressive">Aggressive (6-10% monthly)</option>
+                                                <label class="form-label">Eros Plan</label>
+                                                <select class="form-select" id="erosPlan">
+                                                    <option value="starter">Eros Starter (70% keep)</option>
+                                                    <option value="pro" selected>Eros Pro (80% keep)</option>
+                                                    <option value="diablo">Eros Diablo (90% keep)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Risk Management</label>
+                                                <select class="form-select" id="riskManagement">
+                                                    <option value="0.5">0.5% per trade</option>
+                                                    <option value="1" selected>1% per trade</option>
+                                                    <option value="2">2% per trade</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -120,7 +137,14 @@
                                         <div class="col-6">
                                             <div class="p-3 bg-white rounded shadow-sm">
                                                 <div class="h5 text-success mb-1" id="netEarnings">$0</div>
-                                                <div class="small text-muted">After Withdrawal Fee</div>
+                                                <div class="small text-muted">After Profit Split</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-6">
+                                            <div class="p-3 bg-white rounded shadow-sm">
+                                                <div class="h5 text-info mb-1" id="finalEarnings">$0</div>
+                                                <div class="small text-muted">Final Earnings</div>
                                             </div>
                                         </div>
                                         
@@ -192,12 +216,20 @@
                                                     <td id="breakdownMonthlyProfit">$0</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Withdrawal Fee:</strong></td>
+                                                    <td><strong>Prop Firm Fee:</strong></td>
                                                     <td id="breakdownWithdrawalFee">$0</td>
                                                 </tr>
                                                 <tr>
                                                     <td><strong>Net Earnings:</strong></td>
                                                     <td id="breakdownNetEarnings">$0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Account Management Fee:</strong></td>
+                                                    <td id="breakdownAccountFee">$0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Final Earnings:</strong></td>
+                                                    <td id="breakdownFinalEarnings">$0</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -281,16 +313,22 @@ function calculateEarnings() {
     const totalCapital = selectedAccounts.reduce((sum, amount) => sum + amount, 0);
     const accountCount = selectedAccounts.length;
     const profitPercent = parseFloat(document.getElementById('profitPercent').value) || 0;
-    const withdrawalFeePercent = parseFloat(document.getElementById('withdrawalFee').value) || 0;
+    const profitSplitPercent = parseFloat(document.getElementById('profitSplit').value) || 90;
 
     const monthlyProfit = totalCapital * (profitPercent / 100);
-    const withdrawalFee = monthlyProfit * (withdrawalFeePercent / 100);
-    const netEarnings = monthlyProfit - withdrawalFee;
-    const yearlyEarnings = netEarnings * 12;
+    const propFirmFee = monthlyProfit * ((100 - profitSplitPercent) / 100);
+    const netEarnings = monthlyProfit - propFirmFee;
+    
+    // Calculate account management fee based on selected plan
+    const accountManagementPercent = getAccountManagementPercent();
+    const accountManagementFee = netEarnings * ((100 - accountManagementPercent) / 100);
+    const finalEarnings = netEarnings - accountManagementFee;
+    const yearlyEarnings = finalEarnings * 12;
 
     // Update main results
     document.getElementById('monthlyProfit').textContent = '$' + monthlyProfit.toLocaleString();
     document.getElementById('netEarnings').textContent = '$' + netEarnings.toLocaleString();
+    document.getElementById('finalEarnings').textContent = '$' + finalEarnings.toLocaleString();
     document.getElementById('yearlyEarnings').textContent = '$' + yearlyEarnings.toLocaleString();
     document.getElementById('totalCapital').textContent = '$' + totalCapital.toLocaleString();
 
@@ -301,11 +339,29 @@ function calculateEarnings() {
     document.getElementById('breakdownTotalCapital').textContent = '$' + totalCapital.toLocaleString();
     document.getElementById('breakdownProfitPercent').textContent = profitPercent + '%';
     document.getElementById('breakdownMonthlyProfit').textContent = '$' + monthlyProfit.toLocaleString();
-    document.getElementById('breakdownWithdrawalFee').textContent = '$' + withdrawalFee.toLocaleString();
+    document.getElementById('breakdownWithdrawalFee').textContent = '$' + propFirmFee.toLocaleString();
     document.getElementById('breakdownNetEarnings').textContent = '$' + netEarnings.toLocaleString();
+    document.getElementById('breakdownAccountFee').textContent = '$' + accountManagementFee.toLocaleString();
+    document.getElementById('breakdownFinalEarnings').textContent = '$' + finalEarnings.toLocaleString();
 
     // Update plan recommendation
-    updatePlanRecommendation(netEarnings, accountCount, totalCapital);
+    updatePlanRecommendation(finalEarnings, accountCount, totalCapital);
+}
+
+function getAccountManagementPercent() {
+    // Get the selected plan from the dropdown
+    const selectedPlan = document.getElementById('erosPlan').value;
+    
+    switch(selectedPlan) {
+        case 'starter':
+            return 70; // Eros Starter - user keeps 70%
+        case 'pro':
+            return 80; // Eros Pro - user keeps 80%
+        case 'diablo':
+            return 90; // Eros Diablo - user keeps 90%
+        default:
+            return 80; // Default to Pro plan
+    }
 }
 
 function updatePlanRecommendation(monthlyEarnings, accountCount, totalCapital) {
@@ -315,58 +371,67 @@ function updatePlanRecommendation(monthlyEarnings, accountCount, totalCapital) {
         planElement.innerHTML = `
             <div class="text-center text-muted">
                 <i class="fas fa-info-circle fa-2x mb-3"></i>
-                <p class="mb-0">Add accounts to see your recommended plan</p>
+                <p class="mb-0">Add accounts to see your selected plan details</p>
             </div>
         `;
         return;
     }
 
-    let planName, planPrice, planFeatures, planColor, planIcon, planBenefits, profitShare;
+    // Get the selected plan from the dropdown
+    const selectedPlan = document.getElementById('erosPlan').value;
+    let planName, planPrice, planFeatures, planColor, planIcon, planBenefits, profitShare, accountManagementPercent;
 
-    if (monthlyEarnings < 3000) {
-        planName = "Eros Starter";
-        planPrice = "$97/month";
-        planIcon = "fas fa-seedling";
-        planColor = "primary";
-        planFeatures = "Designed for traders ready to pass their first challenge, earn steady payouts, and build long-term account growth with less risk.";
-        profitShare = "70/30 Profit Share (you keep 70%)";
-        planBenefits = [
-            "1 Prop Account Management",
-            "1 Prop Challenge Management",
-            "Customer Support",
-            "$1M PROP FUNDING ROADMAP",
-            "Eros Prop EA"
-        ];
-    } else if (monthlyEarnings < 8000) {
-        planName = "Eros Pro";
-        planPrice = "$197/month";
-        planIcon = "fas fa-chart-line";
-        planColor = "success";
-        planFeatures = "Go pro, scale bigger, and earn more, manage multiple accounts, follow the $2M roadmap, and keep the lion's share of your profits.";
-        profitShare = "80/20 Profit Share (you keep 80%)";
-        planBenefits = [
-            "Up to 5 Prop Account Management",
-            "Up to 5 Prop Challenge Management",
-            "Premium Customer Support",
-            "$2M PROP FUNDING ROADMAP",
-            "Real Capital Account Management",
-            "Eros Prop EA + Eros Gold EA"
-        ];
-    } else {
-        planName = "Eros Diablo";
-        planPrice = "$497/month";
-        planIcon = "fas fa-crown";
-        planColor = "danger";
-        planFeatures = "Maximum funding, maximum accounts, maximum freedom.";
-        profitShare = "90/10 Profit Share (you keep 90%)";
-        planBenefits = [
-            "Up to 20 Prop Accounts Management",
-            "Up to 20 Prop Challenge Management",
-            "Premium Customer Support",
-            "+$6M PROP FUNDING ROADMAP",
-            "Real Capital Account Management",
-            "Eros Prop EA + Eros Gold EA + EA ELITE EA v2.3"
-        ];
+    switch(selectedPlan) {
+        case 'starter':
+            planName = "Eros Starter";
+            planPrice = "$97/month";
+            planIcon = "fas fa-seedling";
+            planColor = "primary";
+            planFeatures = "Designed for traders ready to pass their first challenge, earn steady payouts, and build long-term account growth with less risk.";
+            profitShare = "70/30 Profit Share (you keep 70%)";
+            accountManagementPercent = 70;
+            planBenefits = [
+                "1 Prop Account Management",
+                "1 Prop Challenge Management",
+                "Customer Support",
+                "$1M PROP FUNDING ROADMAP",
+                "Eros Prop EA"
+            ];
+            break;
+        case 'pro':
+            planName = "Eros Pro";
+            planPrice = "$197/month";
+            planIcon = "fas fa-chart-line";
+            planColor = "success";
+            planFeatures = "Go pro, scale bigger, and earn more, manage multiple accounts, follow the $2M roadmap, and keep the lion's share of your profits.";
+            profitShare = "80/20 Profit Share (you keep 80%)";
+            accountManagementPercent = 80;
+            planBenefits = [
+                "Up to 5 Prop Account Management",
+                "Up to 5 Prop Challenge Management",
+                "Premium Customer Support",
+                "$2M PROP FUNDING ROADMAP",
+                "Real Capital Account Management",
+                "Eros Prop EA + Eros Gold EA"
+            ];
+            break;
+        case 'diablo':
+            planName = "Eros Diablo";
+            planPrice = "$497/month";
+            planIcon = "fas fa-crown";
+            planColor = "danger";
+            planFeatures = "Maximum funding, maximum accounts, maximum freedom.";
+            profitShare = "90/10 Profit Share (you keep 90%)";
+            accountManagementPercent = 90;
+            planBenefits = [
+                "Up to 20 Prop Accounts Management",
+                "Up to 20 Prop Challenge Management",
+                "Premium Customer Support",
+                "+$6M PROP FUNDING ROADMAP",
+                "Real Capital Account Management",
+                "Eros Prop EA + Eros Gold EA + EA ELITE EA v2.3"
+            ];
+            break;
     }
 
     const benefitsList = planBenefits.map(benefit => `<li class="mb-2"><i class="fas fa-check text-${planColor} me-2"></i>${benefit}</li>`).join('');
@@ -395,9 +460,13 @@ function updatePlanRecommendation(monthlyEarnings, accountCount, totalCapital) {
                 <i class="fas fa-rocket me-2"></i>Get Started with ${planName}
             </a>
             <small class="text-muted d-block mt-2">
-                Based on your potential monthly earnings of $${monthlyEarnings.toLocaleString()}
+                Based on your potential final earnings of $${monthlyEarnings.toLocaleString()}
             </small>
-        </div>
+            <small class="text-info d-block mt-1">
+                <i class="fas fa-info-circle me-1"></i>
+                Account Management: You keep ${accountManagementPercent}% of net earnings
+            </small>
+</div>
     `;
 }
 
@@ -415,23 +484,23 @@ function showPlan() {
     document.getElementById('planTab').className = 'btn btn-primary flex-fill';
 }
 
-function updateRiskLevel() {
-    const risk = document.getElementById('riskLevel').value;
+function updateRiskManagement() {
+    const riskManagement = document.getElementById('riskManagement').value;
     const profitInput = document.getElementById('profitPercent');
-    const feeInput = document.getElementById('withdrawalFee');
+    const profitSplitInput = document.getElementById('profitSplit');
     
-    switch(risk) {
-        case 'conservative':
+    switch(riskManagement) {
+        case '0.5':
             profitInput.value = 3;
-            feeInput.value = 5;
+            profitSplitInput.value = 100;
             break;
-        case 'moderate':
+        case '1':
             profitInput.value = 5;
-            feeInput.value = 10;
+            profitSplitInput.value = 90;
             break;
-        case 'aggressive':
+        case '2':
             profitInput.value = 8;
-            feeInput.value = 15;
+            profitSplitInput.value = 80;
             break;
     }
     calculateEarnings();
@@ -440,13 +509,171 @@ function updateRiskLevel() {
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('addBtn').addEventListener('click', addAccount);
-    document.getElementById('riskLevel').addEventListener('change', updateRiskLevel);
+    document.getElementById('riskManagement').addEventListener('change', updateRiskManagement);
     document.getElementById('profitPercent').addEventListener('input', calculateEarnings);
-    document.getElementById('withdrawalFee').addEventListener('input', calculateEarnings);
+    document.getElementById('profitSplit').addEventListener('change', calculateEarnings);
+    document.getElementById('erosPlan').addEventListener('change', calculateEarnings);
     
     // Initial calculation
     updateDisplay();
     calculateEarnings();
 });
 </script>
+
+<style>
+/* Royal Blue Template Styles */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+}
+
+.hero-particles {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate-fade-in-delay {
+    animation: fadeIn 1s ease-out 0.2s both;
+}
+
+/* Cards */
+.card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1) !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    border: none;
+}
+
+.btn-outline-primary {
+    border: 2px solid #1e40af;
+    color: #1e40af;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    border-color: #1e40af;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #059669, #10b981);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #047857, #059669);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #1e40af;
+    box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+}
+
+/* Account Cards */
+.account-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.account-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+    border-color: rgba(30, 64, 175, 0.2);
+}
+
+/* Results Cards */
+.results-card {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid rgba(30, 64, 175, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.results-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.2);
+}
+
+/* Plan Cards */
+.plan-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.15);
+    border-color: rgba(30, 64, 175, 0.3);
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 10px;
+    background-color: rgba(30, 64, 175, 0.1);
+}
+
+.progress-bar {
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .account-card {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        color: white;
+    }
+    
+    .results-card {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        color: white;
+    }
+    
+    .plan-card {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        color: white;
+    }
+}
+</style>
 @endsection

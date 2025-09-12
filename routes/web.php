@@ -91,6 +91,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/roadmap', [App\Http\Controllers\RoadmapController::class, 'index'])->name('roadmap');
     Route::get('/affiliate', [App\Http\Controllers\AffiliateController::class, 'index'])->name('affiliate');
     Route::get('/expert-advisors', [App\Http\Controllers\ExpertAdvisorController::class, 'index'])->name('expert.advisors');
+    Route::get('/prop-firms', [App\Http\Controllers\PropFirmController::class, 'index'])->name('prop.firms');
     // Support System
     Route::get('/support', [App\Http\Controllers\SupportController::class, 'index'])->name('support.index');
     Route::get('/support/create', [App\Http\Controllers\SupportController::class, 'create'])->name('support.create');

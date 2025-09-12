@@ -10,6 +10,14 @@ class ProfileController extends Controller
     {
         return view('profile.index');
     }
+
+    public function adminIndex()
+    {
+        $user = auth()->user();
+        return view('admin.profile', compact('user'));
+    }
 }
+
+
 
 

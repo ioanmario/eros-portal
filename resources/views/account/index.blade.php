@@ -50,8 +50,23 @@
                     </form>
 
                     <div id="brokerSyncResult" class="mt-3"></div>
-                    <div class="mt-3 small text-muted">
-                        Plan: <span class="fw-semibold text-light">{{ ucfirst($plan) }}</span> • Accounts: {{ $currentCount }} / {{ $maxAccounts }} • Remaining: {{ $remaining }}
+                    <div class="mt-3">
+                        <div class="row g-2">
+                            <div class="col-auto">
+                                <span class="badge bg-primary">Plan: {{ ucfirst($plan) }}</span>
+                            </div>
+                            <div class="col-auto">
+                                <span class="badge bg-secondary">Accounts: {{ $currentCount }}/{{ $maxAccounts }}</span>
+                            </div>
+                            <div class="col-auto">
+                                <span class="badge bg-success">Remaining: {{ $remaining }}</span>
+                            </div>
+                            @if($plan === 'free')
+                            <div class="col-auto">
+                                <a href="{{ route('plans') }}" class="btn btn-brand btn-sm">Upgrade Plan</a>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,12 +74,18 @@
         <div class="col-12 col-lg-5">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h3 class="h5 mb-3">Tips</h3>
-                    <ul class="mb-0 small text-muted">
-                        <li>Use the exact server name as shown in your MetaTrader terminal.</li>
-                        <li>Only investor (read-only) password is required for syncing.</li>
-                        <li>For cTrader or MatchTrader, you’ll be redirected to their flows.</li>
-                    </ul>
+                    <h3 class="h5 mb-3">💡 Tips</h3>
+                    <div class="mb-0">
+                        <div class="alert alert-info mb-2">
+                            <strong>Server Name:</strong> Use the exact name from your MetaTrader terminal.
+                        </div>
+                        <div class="alert alert-warning mb-2">
+                            <strong>Password:</strong> Only investor (read-only) password is required.
+                        </div>
+                        <div class="alert alert-secondary mb-0">
+                            <strong>Platforms:</strong> cTrader & MatchTrader save without verification.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -76,20 +97,19 @@
                 <div class="card-body">
                     <h3 class="h5 mb-3">Your Linked Accounts</h3>
                     <div id="accountsList" class="table-responsive">
-                        <table class="table table-dark table-striped align-middle">
-                            <thead>
+                        <table class="table table-hover align-middle">
+                            <thead class="table-dark">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Platform</th>
-                                    <th>Server</th>
-                                    <th>Login</th>
-                                    <th>Label</th>
-                                    <th>Added</th>
-                                    <th></th>
+                                    <th class="fw-semibold">Platform</th>
+                                    <th class="fw-semibold">Server</th>
+                                    <th class="fw-semibold">Login</th>
+                                    <th class="fw-semibold">Label</th>
+                                    <th class="fw-semibold">Added</th>
+                                    <th class="fw-semibold text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="accountsTbody">
-                                <tr><td colspan="7" class="text-muted">Loading...</td></tr>
+                                <tr><td colspan="6" class="text-center text-muted py-4">Loading accounts...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -180,23 +200,34 @@ function fetchAccounts(){
         .then(r => r.json())
         .then(rows => {
             const tb = document.getElementById('accountsTbody');
-            if (!rows.length) { tb.innerHTML = '<tr><td colspan="7" class="text-muted">No accounts yet.</td></tr>'; return; }
+            if (!rows.length) { tb.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No accounts linked yet. Add one above!</td></tr>'; return; }
             tb.innerHTML = rows.map(a => `
                 <tr>
-                    <td>${a.id}</td>
-                    <td class="text-uppercase">${a.platform}</td>
-                    <td>${a.server ?? ''}</td>
-                    <td>${a.login}</td>
-                    <td>${a.label ?? ''}</td>
-                    <td>${new Date(a.created_at).toLocaleString()}</td>
+                    <td>
+                        <span class="badge bg-primary text-uppercase">${a.platform}</span>
+                    </td>
+                    <td>
+                        <code class="text-muted">${a.server || 'N/A'}</code>
+                    </td>
+                    <td>
+                        <strong>${a.login}</strong>
+                    </td>
+                    <td>
+                        <span class="text-muted">${a.label || '—'}</span>
+                    </td>
+                    <td>
+                        <small class="text-muted">${new Date(a.created_at).toLocaleDateString()}</small>
+                    </td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount(${a.id})">Remove</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount(${a.id})" title="Remove account">
+                            🗑️ Remove
+                        </button>
                     </td>
                 </tr>
             `).join('');
         })
         .catch(() => {
-            document.getElementById('accountsTbody').innerHTML = '<tr><td colspan="7" class="text-danger">Failed to load accounts.</td></tr>';
+            document.getElementById('accountsTbody').innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">❌ Failed to load accounts. Please refresh the page.</td></tr>';
         });
 }
 

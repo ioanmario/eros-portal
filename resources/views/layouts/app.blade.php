@@ -24,33 +24,102 @@
     <style>
         :root {
             --brand-accent: #8B0000; /* vampire red */
+            --brand-accent-hover: #B11A1A;
             --bg: #ffffff;
             --fg: #212529;
             --card-bg: #ffffff;
             --muted: #6c757d;
             --navbar-bg: #f8f9fa;
+            --border: #dee2e6;
         }
         html.dark {
-            --bg: #0f0f12;
-            --fg: #8B0000; /* vampire red text in dark mode */
-            --card-bg: #141419;
-            --muted: #a1a1aa;
-            --navbar-bg: #121217;
+            --bg: #0a0a0f;
+            --fg: #ffffff; /* high contrast white text */
+            --card-bg: #1a1a1f;
+            --muted: #b8bcc8;
+            --navbar-bg: #15151a;
+            --border: #2a2a35;
         }
-        body { background: var(--bg); color: var(--fg); }
-        .navbar { background: var(--navbar-bg) !important; }
-        .card { background: var(--card-bg); }
+        body { 
+            background: var(--bg); 
+            color: var(--fg); 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar { 
+            background: var(--navbar-bg) !important; 
+            border-bottom: 1px solid var(--border);
+        }
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border);
+        }
         .text-muted { color: var(--muted) !important; }
-        .btn-brand { background-color: var(--brand-accent); border-color: var(--brand-accent); color: #fff; }
-        .btn-brand:hover { filter: brightness(1.1); color: #fff; }
-        /* Dark theme navbar links use vampire red */
-        html.dark .navbar .navbar-brand,
-        html.dark .navbar .nav-link { color: var(--brand-accent) !important; }
-        html.dark .navbar .nav-link:hover,
-        html.dark .navbar .nav-link:focus { color: #b11a1a !important; }
-        html.dark .navbar .dropdown-menu { background: var(--card-bg); }
-        html.dark .navbar .dropdown-item { color: var(--brand-accent); }
-        html.dark .navbar .dropdown-item:hover { background: rgba(139,0,0,0.12); color: #ff5a5a; }
+        .btn-brand { 
+            background-color: var(--brand-accent); 
+            border-color: var(--brand-accent); 
+            color: #fff; 
+        }
+        .btn-brand:hover { 
+            background-color: var(--brand-accent-hover); 
+            border-color: var(--brand-accent-hover); 
+            color: #fff; 
+        }
+        /* Navbar links - better contrast */
+        .navbar .navbar-brand,
+        .navbar .nav-link { 
+            color: var(--fg) !important; 
+            transition: color 0.2s ease;
+        }
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus { 
+            color: var(--brand-accent) !important; 
+        }
+        .navbar .dropdown-menu { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border);
+        }
+        .navbar .dropdown-item { 
+            color: var(--fg); 
+            transition: background-color 0.2s ease;
+        }
+        .navbar .dropdown-item:hover { 
+            background: rgba(139,0,0,0.1); 
+            color: var(--brand-accent); 
+        }
+        /* Form elements */
+        .form-control, .form-select {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+        }
+        .form-control:focus, .form-select:focus {
+            background: var(--card-bg);
+            border-color: var(--brand-accent);
+            color: var(--fg);
+            box-shadow: 0 0 0 0.2rem rgba(139,0,0,0.25);
+        }
+        /* Tables */
+        .table-dark {
+            --bs-table-bg: var(--card-bg);
+            --bs-table-color: var(--fg);
+            --bs-table-border-color: var(--border);
+        }
+        /* Alerts */
+        .alert-success {
+            background-color: rgba(29, 185, 84, 0.1);
+            border-color: #1DB954;
+            color: #1DB954;
+        }
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .alert-warning {
+            background-color: rgba(242, 201, 76, 0.1);
+            border-color: #F2C94C;
+            color: #F2C94C;
+        }
     </style>
     <script>
         (function(){
@@ -107,7 +176,12 @@
                             <!-- Admin Menu -->
                             <li class="nav-item"><a class="nav-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('admin.users.index') }}">Manage Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.payouts.index') }}">Manage Payouts</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.support.index') }}">Support Tickets</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('payment.index') }}">Payment Management</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.analytics.index') }}">Analytics</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('admin.switch.user') }}">Switch to User View</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('admin.profile') }}">Profile</a></li>
                         @else
                             <!-- User Menu -->
                             <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a></li>
@@ -115,7 +189,8 @@
                             <li class="nav-item"><a class="nav-link" href="{{ route('roadmap') }}">Roadmap</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('affiliate') }}">Affiliate</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('expert.advisors') }}">Expert Advisors</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('support') }}">Support</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('support.index') }}">Support</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('plans') }}">Plans</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('profile') }}">Profile</a></li>
                         @endif
 

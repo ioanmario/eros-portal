@@ -22,7 +22,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'affiliate_code'
+        'affiliate_code',
+        'referral_code',
+        'referred_by_code',
+        'referred_by_user_id',
+        'plan',
+        'stripe_customer_id',
+        'stripe_subscription_id',
+        'subscription_ends_at',
     ];
 
     /**
@@ -43,5 +50,52 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'subscription_ends_at' => 'datetime',
     ];
+
+    // Affiliate relationships
+    public function affiliate()
+    {
+        return $this->hasOne(Affiliate::class);
+    }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by_user_id');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by_user_id');
+    }
+
+    public function brokerAccounts()
+    {
+        return $this->hasMany(BrokerAccount::class);
+    }
+
+    public function payoutRequests()
+    {
+        return $this->hasMany(PayoutRequest::class);
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    // Helper methods
+    public function isAffiliate(): bool
+    {
+        return $this->affiliate && $this->affiliate->isApproved();
+    }
+
+    public function generateReferralCode(): string
+    {
+        if (!$this->referral_code) {
+            $this->referral_code = strtoupper(substr($this->name, 0, 3) . rand(1000, 9999));
+            $this->save();
+        }
+        return $this->referral_code;
+    }
 }

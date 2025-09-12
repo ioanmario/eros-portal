@@ -15,8 +15,8 @@ class AccountController extends Controller
             ['key' => 'matchtrader', 'name' => 'MatchTrader', 'logo' => '/images/brokers/matchtrader.png'],
         ];
 
-        $plan = auth()->user()->plan ?? 'starter';
-        $limits = ['starter' => 1, 'pro' => 5, 'diablo' => 20];
+        $plan = auth()->user()->plan ?? 'free';
+        $limits = ['free' => 0, 'starter' => 1, 'pro' => 5, 'diablo' => 20];
         $maxAccounts = $limits[$plan] ?? 1;
         $currentCount = \App\Models\BrokerAccount::where('user_id', auth()->id())->count();
         $remaining = max(0, $maxAccounts - $currentCount);

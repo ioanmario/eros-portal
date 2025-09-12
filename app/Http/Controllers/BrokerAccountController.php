@@ -27,8 +27,8 @@ class BrokerAccountController extends Controller
         ]);
 
         // Enforce plan-based limits
-        $plan = $request->user()->plan ?? 'starter';
-        $limits = ['starter' => 1, 'pro' => 5, 'diablo' => 20];
+        $plan = $request->user()->plan ?? 'free';
+        $limits = ['free' => 0, 'starter' => 1, 'pro' => 5, 'diablo' => 20];
         $max = $limits[$plan] ?? 1;
         $count = BrokerAccount::where('user_id', $request->user()->id)->count();
         if ($count >= $max) {

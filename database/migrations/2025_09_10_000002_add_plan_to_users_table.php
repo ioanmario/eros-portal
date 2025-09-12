@@ -9,16 +9,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('plan')->default('starter')->after('remember_token'); // starter | pro | diablo
+            $table->string('plan')->default('free')->after('remember_token'); // free | starter | pro | diablo
+            $table->string('stripe_customer_id')->nullable()->after('plan');
+            $table->string('stripe_subscription_id')->nullable()->after('stripe_customer_id');
+            $table->timestamp('subscription_ends_at')->nullable()->after('stripe_subscription_id');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('plan');
+            $table->dropColumn(['plan', 'stripe_customer_id', 'stripe_subscription_id', 'subscription_ends_at']);
         });
     }
 };
+
+
 
 

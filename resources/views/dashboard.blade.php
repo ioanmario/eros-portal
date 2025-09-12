@@ -58,7 +58,7 @@
                 <div class="card-body">
                     <h3 class="h5">Support</h3>
                     <p class="text-muted">Need help? Browse guides or contact our team.</p>
-                    <a href="{{ route('support') }}" class="stretched-link">Get support</a>
+                    <a href="{{ route('support.index') }}" class="stretched-link">Get support</a>
                 </div>
             </div>
         </div>
